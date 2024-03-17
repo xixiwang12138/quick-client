@@ -277,7 +277,7 @@ const ListUsers = () => {
                                     </Grid>
                                 </Fragment>
                             )}
-                            {records.length === 0 && (
+                            {(
                                 <Grid container>
                                     <Grid item xs={8}>
                                         <HelpBox

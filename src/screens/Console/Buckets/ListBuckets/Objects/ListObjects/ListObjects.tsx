@@ -568,6 +568,11 @@ const ListObjects = () => {
                         }
                         xhr.setRequestHeader("X-DIR", prefixPath)
 
+                        const jwt = localStorage.getItem("jwt");
+                        if (jwt) {
+                            xhr.setRequestHeader("Authorization", jwt)
+                        }
+
                         const areMultipleFiles = files.length > 1;
                         let errorMessage = `An error occurred while uploading the file${
                             areMultipleFiles ? "s" : ""

@@ -261,34 +261,34 @@ const Groups = () => {
                                     </Grid>
                                 </Fragment>
                             )}
+                            <Grid item xs={12}>
+                                <Grid container>
+                                    <Grid item xs={8}>
+                                        <HelpBox
+                                            title={"角色"}
+                                            iconComponent={<UsersIcon/>}
+                                            help={
+                                                <Fragment>
+                                                    {DOC_HELPER.ROLE_BASIC}
+                                                    <br/>
+                                                    <br/>
+                                                    去创建用户，{" "}
+                                                    <ActionLink
+                                                        onClick={() => {
+                                                            navigate(`${IAM_PAGES.GROUPS_ADD}`);
+                                                        }}
+                                                    >
+                                                        Create a Role
+                                                    </ActionLink>
+                                                    .
+                                                </Fragment>
+                                            }
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
                         </Fragment>
                     )}
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid item xs={8}>
-                                <HelpBox
-                                    title={"角色"}
-                                    iconComponent={<UsersIcon/>}
-                                    help={
-                                        <Fragment>
-                                            {DOC_HELPER.ROLE_BASIC}
-                                            <br/>
-                                            <br/>
-                                            去创建用户，{" "}
-                                            <ActionLink
-                                                onClick={() => {
-                                                    navigate(`${IAM_PAGES.GROUPS_ADD}`);
-                                                }}
-                                            >
-                                                Create a Role
-                                            </ActionLink>
-                                            .
-                                        </Fragment>
-                                    }
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
                 </Grid>
             </PageLayout>
         </Fragment>

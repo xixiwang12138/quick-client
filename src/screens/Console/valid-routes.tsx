@@ -104,7 +104,6 @@ export const validRoutes = (
 
   let consoleMenus: IMenuItem[] = [
     {
-      group: "User",
       name: "Object Browser",
       id: "object-browser",
       path: IAM_PAGES.OBJECT_BROWSER_VIEW,
@@ -127,7 +126,6 @@ export const validRoutes = (
     //   forceDisplay: true,
     // },
     {
-      group: "Administrator",
       name: "Buckets",
       id: "buckets",
       path: IAM_PAGES.BUCKETS,
@@ -142,7 +140,6 @@ export const validRoutes = (
     //   icon: <AccessMenuIcon />,
     // },
     {
-      group: "Administrator",
       name: "Identity",
       id: "identity",
       icon: <IdentityMenuIcon />,

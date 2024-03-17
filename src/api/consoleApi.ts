@@ -1765,10 +1765,18 @@ export class HttpClient<SecurityDataType = unknown> {
         const payloadFormatter = this.contentFormatters[type || ContentType.Json];
         const responseFormat = format || requestParams.format;
 
-        let jwt = localStorage.getItem("jwt");
-        if (!jwt) {
-            jwt = "mock"
+        const h = {
+            ...(requestParams.headers || {}),
+            ...(type && type !== ContentType.FormData
+                ? {"Content-Type": type}
+                : {}),
+        };
+        const jwt = localStorage.getItem("jwt");
+        if (jwt) {
+            // @ts-ignore
+            h["Authorization"] = jwt
         }
+
 
         return this.customFetch(
             `${baseUrl || this.baseUrl || ""}${path}${
@@ -1776,13 +1784,7 @@ export class HttpClient<SecurityDataType = unknown> {
             }`,
             {
                 ...requestParams,
-                headers: {
-                    "Authorization": jwt,
-                    ...(requestParams.headers || {}),
-                    ...(type && type !== ContentType.FormData
-                        ? {"Content-Type": type}
-                        : {}),
-                },
+                headers: h,
                 signal:
                     (cancelToken
                         ? this.createAbortSignal(cancelToken)
@@ -1857,7 +1859,7 @@ export class Api<
          * @request POST:/login
          */
         login: (body: LoginRequest, params: RequestParams = {}) =>
-            this.request<{token: string}, ApiError>({
+            this.request<{ token: string }, ApiError>({
                 path: `/user/login`,
                 method: "POST",
                 body: body,
@@ -3325,19 +3327,19 @@ export class Api<
 
     role = {
         grantRoles: (users: string[], roles: string[]) =>
-            this.request < Role, ApiError > ({
-            path: `/role/grant`,
-            method: "POST",
-            secure: true,
-            format: "json",
-            body: {
-                users,
-                roles
-            },
-        }),
+            this.request <Role, ApiError>({
+                path: `/role/grant`,
+                method: "POST",
+                secure: true,
+                format: "json",
+                body: {
+                    users,
+                    roles
+                },
+            }),
 
         createRole: (role: Role, params: RequestParams = {}) =>
-            this.request < Role, ApiError > ({
+            this.request <Role, ApiError>({
                 path: `/role`,
                 method: "POST",
                 secure: true,
@@ -3347,19 +3349,19 @@ export class Api<
             }),
 
         listRoles: (offset: number, limit: number, params: RequestParams = {}) =>
-            this.request<{roles: Role[], count: number}, ApiError>({
+            this.request<{ roles: Role[], count: number }, ApiError>({
                 path: `/role/list`,
                 method: "GET",
                 secure: true,
                 format: "json",
                 query: {
-                  offset: offset,
-                  limit
+                    offset: offset,
+                    limit
                 },
                 ...params,
             }),
 
-        getMyRoles: ( params: RequestParams = {}) =>
+        getMyRoles: (params: RequestParams = {}) =>
             this.request<string[], ApiError>({
                 path: `/role/me`,
                 method: "GET",

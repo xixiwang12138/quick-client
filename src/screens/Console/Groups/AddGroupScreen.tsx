@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import React, {Fragment, useEffect, useState} from "react";
+import React, {ChangeEvent, Fragment, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {modalStyleUtils} from "../Common/FormComponents/common/styleLibrary";
 
@@ -41,6 +41,7 @@ import {setQuota} from "../Buckets/ListBuckets/AddBucket/addBucketsSlice";
 import {Permission} from "../../../api/consoleApi";
 import {useSelector} from "react-redux";
 import {analyze} from "ts-prune/lib/analyzer";
+import {set} from "lodash";
 
 
 const SelectRecord = (props: any) => {
@@ -50,12 +51,11 @@ const SelectRecord = (props: any) => {
                 {props.display?.length > 0 ? (
                     <Fragment>
                         <DataTable
-                            columns={[{label: `${props.title}`, elementKey: "name"}]}
+                            columns={[{label: `${props.title}`}]}
                             onSelect={props.select}
                             selectedItems={props.selectedRecords}
                             isLoading={false}
                             records={props.display}
-                            idField="name"
                             customPaperHeight={"200px"}
                         />
                     </Fragment>
@@ -76,8 +76,8 @@ const AddGroupScreen = () => {
     const [loadUserPerm, setLoadUserPerm] = useState<boolean>(true);
 
 
-    const [read, setRead] = useState<[]>([]);
-    const [write, setWrite] = useState<[]>([]);
+    const [read, setRead] = useState<string[]>([]);
+    const [write, setWrite] = useState<string[]>([]);
     const [manage, setManage] = useState<string[]>([]);
 
 
@@ -88,6 +88,55 @@ const AddGroupScreen = () => {
     const perm = useSelector(
         (state: AppState) => state.system.userPerm
     )
+
+    const selectionReadChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {target: {value = "", checked = false} = {}} = e;
+
+        let elements: string[] = [...read]; // We clone the checkedUsers array
+
+        if (checked) {
+            // If the user has checked this field we need to push this to checkedUsersList
+            elements.push(value);
+        } else {
+            // User has unchecked this field, we need to remove it from the list
+            elements = elements.filter((element) => element !== value);
+        }
+
+        setRead(elements);
+        return read
+    };
+    const selectionWriteChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {target: {value = "", checked = false} = {}} = e;
+
+        let elements: string[] = [...write]; // We clone the checkedUsers array
+
+        if (checked) {
+            // If the user has checked this field we need to push this to checkedUsersList
+            elements.push(value);
+        } else {
+            // User has unchecked this field, we need to remove it from the list
+            elements = elements.filter((element) => element !== value);
+        }
+
+        setWrite(elements);
+        return write;
+    };
+    const selectionManageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {target: {value = "", checked = false} = {}} = e;
+
+        let elements: string[] = [...manage]; // We clone the checkedUsers array
+
+        if (checked) {
+            // If the user has checked this field we need to push this to checkedUsersList
+            elements.push(value);
+        } else {
+            // User has unchecked this field, we need to remove it from the list
+            elements = elements.filter((element) => element !== value);
+        }
+
+        setManage(elements);
+        return manage;
+    };
 
     useEffect(() => {
         // 获取用户权限
@@ -164,7 +213,6 @@ const AddGroupScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    console.log(perm);
 
     return (
         <Fragment>
@@ -194,26 +242,68 @@ const AddGroupScreen = () => {
                                 setGroupName(e.target.value);
                             }}
                         />
-                        {perm?.readable && (<SelectRecord
-                            selectedRecords={read}
-                            select={setRead}
-                            display={perm?.readable.map(value => value.resource_index) as []}
-                            title={"授予仅读权限的bucket"}
-                        />)}
+                        {perm?.readable && (<FormLayout withBorders={false} containerPadding={false}>
+                            <Grid item xs={12} className={"inputItem"}>
+                                <Box>
+                                    {(perm?.readable.map(value => value.resource_index) as []).length > 0 ? (
+                                        <Fragment>
+                                            <DataTable
+                                                columns={[{label: `授予仅读权限的bucket`}]}
+                                                onSelect={selectionReadChanged}
+                                                selectedItems={read}
+                                                isLoading={false}
+                                                records={(perm?.readable.map(value => value.resource_index) as [])}
+                                                customPaperHeight={"200px"}
+                                            />
+                                        </Fragment>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </Box>
+                            </Grid>
+                        </FormLayout>)}
 
-                        {perm?.writable && (<SelectRecord
-                            selectedRecords={write}
-                            select={setWrite} // TODO 设置选中函数回调函数
-                            display={perm?.writable.map(value => value.resource_index) as []}
-                            title={"授予读写权限的bucket"}
-                        />)}
+                        {perm?.writable && (<FormLayout withBorders={false} containerPadding={false}>
+                            <Grid item xs={12} className={"inputItem"}>
+                                <Box>
+                                    {(perm?.writable.map(value => value.resource_index) as []).length > 0 ? (
+                                        <Fragment>
+                                            <DataTable
+                                                columns={[{label: `授予读写权限的bucket`}]}
+                                                onSelect={selectionWriteChanged}
+                                                selectedItems={write}
+                                                isLoading={false}
+                                                records={(perm?.writable.map(value => value.resource_index) as [])}
+                                                customPaperHeight={"200px"}
+                                            />
+                                        </Fragment>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </Box>
+                            </Grid>
+                        </FormLayout>)}
 
-                        {perm?.manageable && (<SelectRecord
-                            select={setManage}
-                            selectedRecords={manage}
-                            display={perm?.manageable.map(value => value.resource_index)}
-                            title={"授予管理权限的bucket"}
-                        />)}
+                        {perm?.manageable && (<FormLayout withBorders={false} containerPadding={false}>
+                            <Grid item xs={12} className={"inputItem"}>
+                                <Box>
+                                    {(perm?.manageable.map(value => value.resource_index) as []).length > 0 ? (
+                                        <Fragment>
+                                            <DataTable
+                                                columns={[{label: `授予管理权限的bucket`}]}
+                                                onSelect={selectionManageChanged}
+                                                selectedItems={manage}
+                                                isLoading={false}
+                                                records={(perm?.manageable.map(value => value.resource_index) as [])}
+                                                customPaperHeight={"200px"}
+                                            />
+                                        </Fragment>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </Box>
+                            </Grid>
+                        </FormLayout>)}
 
                         <Grid xs={12}>
                             {
@@ -232,7 +322,6 @@ const AddGroupScreen = () => {
                                     /> : <></>
                             }
                         </Grid>
-
 
 
                         <Grid item xs={12} sx={modalStyleUtils.modalButtonBar}>
