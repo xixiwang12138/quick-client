@@ -97,6 +97,10 @@ export const download = (
     }
 
     req.setRequestHeader("X-DIR", Base64.encode(Base64.decode(objectPath)))
+    const jwt  = localStorage.getItem("jwt");
+    if (jwt) {
+        req.setRequestHeader("Authorization", jwt)
+    }
     req.addEventListener(
         "progress",
         function (evt) {

@@ -228,10 +228,10 @@ const Console = () => {
       path: IAM_PAGES.BUCKETS,
       forceDisplay: true,
     },
-    // {
-    //   component: Dashboard,
-    //   path: IAM_PAGES.DASHBOARD,
-    // },
+    {
+      component: Dashboard,
+      path: IAM_PAGES.DASHBOARD,
+    },
     {
       component: Buckets,
       path: IAM_PAGES.ADD_BUCKETS,
@@ -326,7 +326,7 @@ const Console = () => {
     // {
     //   component: Trace,
     //   path: IAM_PAGES.TOOLS_TRACE,
-    // },
+// },
     // {
     //   component: HealthInfo,
     //   path: IAM_PAGES.TOOLS_DIAGNOSTICS,

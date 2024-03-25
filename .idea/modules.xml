@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/web-app.iml" filepath="$PROJECT_DIR$/.idea/web-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/quick-client.iml" filepath="$PROJECT_DIR$/.idea/quick-client.iml" />
     </modules>
   </component>
 </project>

@@ -10,6 +10,8 @@
  * ---------------------------------------------------------------
  */
 
+import {StoreNodeServer} from "../screens/Console/Dashboard/BasicDashboard/data";
+
 export interface AccountChangePasswordRequest {
     current_secret_key: string;
     new_secret_key: string;
@@ -617,6 +619,7 @@ export interface AdminInfoResponse {
     widgets?: Widget[];
     servers?: ServerProperties[];
     backend?: BackendProperties;
+    store_servers?: StoreNodeServer[];
 }
 
 export interface ServerProperties {
@@ -4360,7 +4363,7 @@ export class Api<
             params: RequestParams = {},
         ) =>
             this.request<AdminInfoResponse, ApiError>({
-                path: `/admin/info`,
+                path: `/cluster/info`,
                 method: "GET",
                 query: query,
                 secure: true,
