@@ -47,6 +47,7 @@ import {AdminInfoResponse} from "api/consoleApi";
 import DateRangeSelector from "../../Common/FormComponents/DateRangeSelector/DateRangeSelector";
 import MergedWidgetsRenderer from "./Widgets/MergedWidgetsRenderer";
 import BasicDashboard from "../BasicDashboard/BasicDashboard";
+import CoordinateAxis from "../BasicDashboard/Axis";
 
 interface IPrDashboard {
     apiPrefix?: string;
@@ -206,12 +207,20 @@ const PrDashboard = ({apiPrefix = "admin", usage}: IPrDashboard) => {
                 {usage && status === "idle" && (
                     <Fragment>
                         {searchBox}
+
                         <BasicDashboard usage={usage}/>
                     </Fragment>
                 )}
             </Fragment>
         ),
     };
+
+    const clusterTab: TabItemProps = {
+        tabConfig: {label: "Cluster", id: "cluster", disabled: false},
+        content: (
+            <CoordinateAxis></CoordinateAxis>
+        )
+    }
 
     const prometheusTabs: TabItemProps[] = [
         {
@@ -313,7 +322,7 @@ const PrDashboard = ({apiPrefix = "admin", usage}: IPrDashboard) => {
         },
     ];
 
-    let tabsOptions: TabItemProps[] = [infoTab];
+    let tabsOptions: TabItemProps[] = [infoTab, clusterTab];
 
     return (
         <PageLayout
@@ -337,7 +346,7 @@ const PrDashboard = ({apiPrefix = "admin", usage}: IPrDashboard) => {
                 options={tabsOptions}
                 currentTabOrPath={curTab}
                 onTabClick={(newValue) => {
-                    setCurTab("info"); // 永远展示info界面
+                    setCurTab(newValue); // 永远展示info界面
                 }}
             />
         </PageLayout>

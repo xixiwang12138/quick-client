@@ -125,6 +125,7 @@ export interface MakeBucketRequest {
 }
 
 export interface ApiError {
+    code?: number;
     msg?: string;
     detailedMessage?: string;
 }
@@ -1622,6 +1623,30 @@ export enum ContentType {
     UrlEncoded = "application/x-www-form-urlencoded",
     Text = "text/plain",
 }
+
+export interface SlotSet {
+    id: string;
+    from: number;
+    to: number; // not included
+    storeNodes: string[]; // 存储节点id列表
+    totalSize: number;
+}
+
+export interface BaseStoreNode {
+    id: string; // 唯一标识
+    root: string; // 存储根目录
+    endpoint: string; // 访问方式
+    port: number;
+
+    total: number; // 总容量
+    used: number; // 已使用容量
+}
+
+export interface ClusterDetail {
+    sets: SlotSet[];
+    nodes: BaseStoreNode[];
+}
+
 
 export class HttpClient<SecurityDataType = unknown> {
     public baseUrl: string = "/api/v1";
@@ -4371,6 +4396,28 @@ export class Api<
                 ...params,
             }),
 
+        adminDetail: () =>
+            this.request<ClusterDetail, ApiError>({
+                path: `/cluster/detail`,
+                method: "GET",
+                secure: true,
+                format: "json",
+            }),
+
+        init: () =>
+            this.request<{}, ApiError>({
+                path: `/cluster/init`,
+                method: "POST",
+                secure: true,
+                format: "json",
+            }),
+
+        hasInit: () => this.request<{ hasInit: boolean }, ApiError>({
+            path: `/cluster/init`,
+            method: "GET",
+            secure: true,
+            format: "json",
+        }),
         /**
          * No description
          *

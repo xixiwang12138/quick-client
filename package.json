@@ -8,6 +8,7 @@
     "@reduxjs/toolkit": "^1.9.6",
     "@types/pdfjs-dist": "^2.10.378",
     "custom-mds": "^0.20.0",
+    "echarts": "^5.5.0",
     "kbar": "^0.1.0-beta.39",
     "local-storage-fallback": "^4.1.1",
     "lodash": "^4.17.21",

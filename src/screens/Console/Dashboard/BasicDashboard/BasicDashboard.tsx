@@ -146,12 +146,12 @@ const BasicDashboard = ({usage}: IDashboardProps) => {
                             <StatusCountCard
                                 onlineCount={
                                     serverList?.filter((v) => {
-                                        return v.state === "ok"
+                                        return v.state === "online"
                                     }).length || 0
                                 }
                                 offlineCount={
                                     serverList?.filter((v) => {
-                                        return v.state !== "ok"
+                                        return v.state !== "online"
                                     }).length || 0
                                 }
                                 label={"api-server"}
@@ -162,12 +162,12 @@ const BasicDashboard = ({usage}: IDashboardProps) => {
                             <StatusCountCard
                                 offlineCount={
                                     storeNodeServer?.filter((v) => {
-                                        return v.state !== "ok"
+                                        return v.state !== "online"
                                     }).length || 0
                                 }
                                 onlineCount={
                                     storeNodeServer?.filter((v) => {
-                                        return v.state === "ok"
+                                        return v.state === "online"
                                     }).length || 0
                                 }
                                 label={"store-server"}
