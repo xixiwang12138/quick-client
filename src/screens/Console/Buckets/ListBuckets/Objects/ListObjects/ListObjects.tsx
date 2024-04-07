@@ -14,14 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import React, {
-    Fragment,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+import React, {Fragment, useCallback, useEffect, useMemo, useRef, useState,} from "react";
 import get from "lodash/get";
 import {
     AccessRuleIcon,
@@ -33,13 +26,11 @@ import {
     DeleteIcon,
     DownloadIcon,
     Grid,
-    HistoryIcon,
     PageLayout,
     PreviewIcon,
     RefreshIcon,
     ScreenTitle,
     ShareIcon,
-    Badge,
 } from "mds";
 import {api} from "api";
 import {errorToHandler} from "api/errors";
@@ -48,33 +39,16 @@ import {useSelector} from "react-redux";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useDropzone} from "react-dropzone";
 import {DateTime} from "luxon";
-import {
-    decodeURLString,
-    encodeURLString,
-    niceBytesInt,
-} from "../../../../../../common/utils";
+import {decodeURLString, encodeURLString, niceBytesInt,} from "../../../../../../common/utils";
 import BrowserBreadcrumbs from "../../../../ObjectBrowser/BrowserBreadcrumbs";
 import {AllowedPreviews, previewObjectType} from "../utils";
 import {ErrorResponseHandler} from "../../../../../../common/types";
 import {AppState, useAppDispatch} from "../../../../../../store";
-import {
-    IAM_SCOPES,
-    permissionTooltipHelper,
-} from "../../../../../../common/SecureComponent/permissions";
-import {
-    hasPermission,
-    SecureComponent,
-} from "../../../../../../common/SecureComponent";
-import {
-    setErrorSnackMessage,
-    setSnackBarMessage,
-} from "../../../../../../systemSlice";
+import {IAM_SCOPES, permissionTooltipHelper,} from "../../../../../../common/SecureComponent/permissions";
+import {hasPermission, SecureComponent,} from "../../../../../../common/SecureComponent";
+import {setErrorSnackMessage, setSnackBarMessage,} from "../../../../../../systemSlice";
 import {isVersionedMode} from "../../../../../../utils/validationFunctions";
-import {
-    extractFileExtn,
-    getPolicyAllowedFileExtensions,
-    getSessionGrantsWildCard,
-} from "../../UploadPermissionUtils";
+import {extractFileExtn, getPolicyAllowedFileExtensions, getSessionGrantsWildCard,} from "../../UploadPermissionUtils";
 import {
     makeid,
     removeTrace,
@@ -90,12 +64,11 @@ import {
     resetRewind,
     setAnonymousAccessOpen,
     setDownloadRenameModal,
-    setLoadingVersions,
     setNewObject,
     setObjectDetailsView,
     setPreviewOpen,
     setReloadObjectsList,
-    setRetentionConfig,
+    setRequestInProgress,
     setSelectedObjects,
     setSelectedObjectView,
     setSelectedPreview,
@@ -121,11 +94,9 @@ import UploadFilesButton from "../../UploadFilesButton";
 import DetailsListPanel from "./DetailsListPanel";
 import ObjectDetailPanel from "./ObjectDetailPanel";
 import VersionsNavigator from "../ObjectDetails/VersionsNavigator";
-import RenameLongFileName from "../../../../ObjectBrowser/RenameLongFilename";
 import TooltipWrapper from "../../../../Common/TooltipWrapper/TooltipWrapper";
 import ListObjectsTable from "./ListObjectsTable";
 import FilterObjectsSB from "../../../../ObjectBrowser/FilterObjectsSB";
-import AddAccessRule from "../../../BucketDetails/AddAccessRule";
 
 const DeleteMultipleObjects = withSuspense(
     React.lazy(() => import("./DeleteMultipleObjects")),
@@ -969,29 +940,6 @@ const ListObjects = () => {
                     onClosePreview={closePreviewWindow}
                 />
             )}
-            {!!downloadRenameModal && (
-                <RenameLongFileName
-                    open={!!downloadRenameModal}
-                    closeModal={closeRenameModal}
-                    currentItem={downloadRenameModal.name.split("/")?.pop() || ""}
-                    bucketName={bucketName}
-                    internalPaths={internalPaths}
-                    actualInfo={{
-                        name: downloadRenameModal.name,
-                        last_modified: "",
-                        version_id: downloadRenameModal.version_id,
-                        size: downloadRenameModal.size,
-                    }}
-                />
-            )}
-            {anonymousAccessOpen && (
-                <AddAccessRule
-                    onClose={closeAddAccessRule}
-                    bucket={bucketName}
-                    modalOpen={anonymousAccessOpen}
-                    prefilledRoute={`${selectedObjects[0]}*`}
-                />
-            )}
 
             <PageLayout variant={"full"}>
                 {anonymousMode && (
@@ -1022,11 +970,7 @@ const ListObjects = () => {
                   <span className={"detailsSpacer"}>
                     Created on:&nbsp;
                       <strong>
-                      {bucketInfo?.creation_date
-                          ? createdTime.toFormat(
-                              "ccc, LLL dd yyyy HH:mm:ss (ZZZZ)",
-                          )
-                          : ""}
+                      {bucketInfo?.creation_date}
                     </strong>
                   </span>
                                     <span className={"detailsSpacer"}>
@@ -1062,30 +1006,26 @@ const ListObjects = () => {
                         }
                         actions={
                             <Fragment>
-                                <TooltipWrapper tooltip={"Reload List"}>
-                                    <Button
-                                        id={"refresh-objects-list"}
-                                        label={"Refresh"}
-                                        icon={<RefreshIcon/>}
-                                        variant={"regular"}
-                                        onClick={() => {
-                                            if (versionsMode) {
-                                                dispatch(setLoadingVersions(true));
-                                            } else {
-                                                dispatch(resetMessages());
-                                                dispatch(setReloadObjectsList(true));
-                                            }
-                                        }}
-                                        disabled={
-                                            anonymousMode
-                                                ? false
-                                                : !hasPermission(bucketName, [
-                                                IAM_SCOPES.S3_LIST_BUCKET,
-                                                IAM_SCOPES.S3_ALL_LIST_BUCKET,
-                                            ]) || rewindEnabled
-                                        }
-                                    />
-                                </TooltipWrapper>
+                                {/*<TooltipWrapper tooltip={"Reload List"}>*/}
+                                {/*    <Button*/}
+                                {/*        id={"refresh-objects-list"}*/}
+                                {/*        label={"Refresh"}*/}
+                                {/*        icon={<RefreshIcon/>}*/}
+                                {/*        variant={"regular"}*/}
+                                {/*        onClick={() => {*/}
+                                {/*            dispatch(resetMessages());*/}
+                                {/*            dispatch(setReloadObjectsList(true));*/}
+                                {/*        }}*/}
+                                {/*        disabled={*/}
+                                {/*            anonymousMode*/}
+                                {/*                ? false*/}
+                                {/*                : !hasPermission(bucketName, [*/}
+                                {/*                IAM_SCOPES.S3_LIST_BUCKET,*/}
+                                {/*                IAM_SCOPES.S3_ALL_LIST_BUCKET,*/}
+                                {/*            ]) || rewindEnabled*/}
+                                {/*        }*/}
+                                {/*    />*/}
+                                {/*</TooltipWrapper>*/}
                                 <input
                                     type="file"
                                     multiple

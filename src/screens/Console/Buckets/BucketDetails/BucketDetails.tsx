@@ -223,16 +223,6 @@ const BucketDetails = () => {
             </Fragment>
           }
           title={bucketName}
-          subTitle={
-            <SecureComponent
-              scopes={[
-                IAM_SCOPES.S3_GET_BUCKET_POLICY,
-                IAM_SCOPES.S3_GET_ACTIONS,
-              ]}
-              resource={bucketName}
-            >
-            </SecureComponent>
-          }
           actions={
             <Fragment>
               <SecureComponent
